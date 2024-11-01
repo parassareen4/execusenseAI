@@ -12,7 +12,7 @@ import { MessageSquare, ArrowUpIcon, User2Icon, ArrowLeft } from "lucide-react";
 import { IoIosArrowDown } from "react-icons/io";
 import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-import responder from "../src/assets/chatgpt.jpg"
+import responder from "../src/assets/chatgpt1.png"
 import copy from '../src/assets/copy.svg'
 import like from '../src/assets/like.svg'
 import dislike from '../src/assets/dislike.svg'
@@ -195,9 +195,9 @@ const Chat = () => {
             }`}
           >
             {msg.role === 'responder' && (
-              <div className="rounded-full mr-2 h-7 w-7  p-1 border border-slate-200  flex-shrink-0">
-                <img src={responder} alt="Responder Logo" className="  rounded-full " />
-              </div>
+              
+                <img src={responder} alt="Responder Logo" className="  rounded-full h-7 w-7 object-cover " />
+              
             )}
             <div
               className={`${
