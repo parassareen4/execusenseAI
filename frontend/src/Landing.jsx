@@ -1,344 +1,341 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { motion, useAnimation, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
+import { Lenis } from '@studio-freight/react-lenis';
 
-const LandingPage = () => {
+// Assuming you have these images in your public folder
+import logoImage from './images/logo.png';
+import heroImage from './images/robot.png';
+import strategyImage from './images/handshake.png';
+import insightsImage from './images/photo.jpeg';
+import dashboardImage from './images/pin1.jpg';
+import ctaImage from './images/wall.avif';
+import { Link } from 'react-router-dom';
+
+function App() {
+  const controls = useAnimation();
+  const [ref, inView] = useInView();
+  const { scrollYProgress } = useScroll();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
+
+  useEffect(() => {
+    if (inView) {
+      controls.start('visible');
+    }
+  }, [controls, inView]);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 60 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+  };
+
   return (
-    <div>
-      <div className="navbar" id="navbar">
-        <div className="left-menu">
-          <img className="logo-img" src="images/logo.png" alt="Logo" />
-        </div>
-        <div className="logo">EXECUSENCE</div>
-        <div className="right-menu">
-          <a href="#menu">MENU</a>
-        </div>
-      </div>
-      <div className="tag-line">
-        <p>Stories About Empowerment</p>
-      </div>
-      <div className="banner" id="banner">
-        <div className="left-portion">
-          <img src="images/robot.png" alt="Robot" />
-        </div>
-        <div className="right-portion">
-          <div className="intro-div">
-            <h2>Welcome to ExecuSense AI™</h2>
-            <h1>An AI All You Need</h1>
+    <Lenis root>
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white overflow-hidden">
+        {/* Navbar */}
+        <motion.nav
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          transition={{ type: 'spring', stiffness: 120, damping: 20 }}
+          className="flex justify-between items-center p-6 lg:px-12 bg-gray-900 shadow-lg fixed w-full z-50"
+        >
+          <div className="flex items-center space-x-4">
+            <img src={logoImage} alt="Logo" className="w-auto h-10" />
+            <h1 className="text-2xl font-bold text-blue-400">EXECUSENSE</h1>
           </div>
-        </div>
-      </div>
-      <div className="try-btn-div">
-        <button>Demo Chat <i className="bx bxs-arrow-from-left"></i></button>
-      </div>
-      <div className="about">
-        <h1>ExecuSense</h1>
-        <h2>
-          AI™ empowers executives with data-driven insights for strategic decisions, real-time performance monitoring, risk forecasting, and employee engagement analysis, optimizing agility and precision to drive organizational growth and resilience.
-        </h2>
-      </div>
-      <div className="services">
-        <h2>WHY US-</h2>
-        <div className="image-gallery">
-          <div className="div1 div">
-            <img src="images/path.jpeg" alt="Strategic Decision Support" />
-            <p>Strategic Decision Support</p>
+          <div className="hidden md:flex space-x-8">
+            {['Home', 'Services', 'About', 'Contact'].map((item) => (
+              <motion.a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="text-gray-300 hover:text-blue-400 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {item}
+              </motion.a>
+            ))}
           </div>
-          <div className="div div2">
-            <img src="images/help-others.jpeg" alt="Employee Satisfaction Insights" />
-            <p>Employee Satisfaction Insights</p>
-          </div>
-          <div className="div div3">
-            <img src="images/pin2.jpg" alt="Real-Time Leadership Dashboard" />
-            <p>Real-Time Leadership Dashboard</p>
-          </div>
-        </div>
-      </div>
-      <div className="banner-2">
-        <h2>Here We Go</h2>
-        <h1>Gain the edge in every decision with real-time insights, predictive intelligence, and seamless oversight—ExecuSense AI™ is here to elevate your leadership and drive impactful outcomes.</h1>
-      </div>
-      <div className="subscribe-page">
-        <div className="left-portion">
-          <p>Fill That Void To Subscribe</p>
-          <input className="input-box" type="text" />
-          <button>Click Me!</button>
-        </div>
-        <div className="right-portion"></div>
-      </div>
-      <div className="footer">
-        <div className="left-part">
-          <p>©ExecuSence</p>
-          <p>Powered by @LIGMA</p>
-        </div>
-        <div className="right-part">
-          <a href="#navbar" className="icon">
-            <i className='bx bxs-left-top-arrow-circle'></i>
-          </a>
-        </div>
-      </div>
+          <Link to={'/user'}>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Get Started
+          </motion.button>
+          </Link>
+        </motion.nav>
 
-      {/* Inline CSS Styles */}
-      <style>{`
-        *, body {
-          box-sizing: border-box;
-          padding: 0;
-          margin: 0;
-          font-family: "Work Sans", sans-serif;
-        }
-        :root {
-          --black: black;
-        }
-        .navbar {
-          padding: 75px 40px 55px 40px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 100%;
-          height: 100px;
-        }
-        .navbar .logo-img {
-          width: 150px;
-          margin-top: 30px;
-        }
-        .navbar .logo {
-          font-size: 60px;
-          cursor: pointer;
-          margin-right: 59px;
-          font-weight: 700;
-        }
-        .navbar .right-menu a {
-          font-size: 30px;
-          text-decoration: none;
-          color: var(--black);
-        }
-        .tag-line {
-          text-align: center;
-          font-size: 23px;
-        }
-        .banner {
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          height: 800px;
-          align-items: center;
-        }
-        .left-portion {
-          width: 47%;
-          height: 700px;
-          background: linear-gradient(to bottom, #0f1b24 30%, #192731);
-          display: flex;
-          justify-content: center;
-          font-size: 50px;
-          align-items: center;
-        }
-        .left-portion img {
-          padding-top: 128px;
-          width: 535px;
-        }
-        .right-portion {
-          height: 700px;
-          background-color: black;
-          width: 47%;
-          color: white;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        .intro-div {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-        }
-        .intro-div h2 {
-          font-size: 30px;
-          font-weight: 500;
-          padding-bottom: 70px;
-        }
-        .intro-div h1 {
-          font-size: 70px;
-          width: 80%;
-          animation-name: anime;
-          animation-duration: 10s;
-          animation-iteration-count: 1;
-          text-align: center;
-          position: relative;
-        }
-        @keyframes anime {
-          from {
-            color: black;
-            font-weight: 650;
-          }
-          to {
-            color: white;
-            font-weight: 700;
-          }
-        }
-        .try-btn-div {
-          display: flex;
-          justify-content: center;
-          margin-top: 80px;
-          margin-bottom: 100px;
-          color: white;
-        }
-        .try-btn-div button {
-          padding: 25px 78px;
-          border: 0;
-          background-color: black;
-          color: white;
-          cursor: pointer;
-          font-size: 45px;
-          font-weight: light;
-          border-radius: 10px;
-        }
-        .try-btn-div button:hover {
-          background-color: #28282b;
-          transition: 0.5s ease;
-          filter: drop-shadow(5px 5px 10px black);
-        }
-        .about {
-          width: 100%;
-          height: 200px;
-          display: flex;
-          justify-content: center;
-          margin: 130px 100px 100px 100px;
-        }
-        .about h1 {
-          font-size: 50px;
-          font-weight: 600;
-        }
-        .about h2 {
-          width: 40%;
-          text-align: justify;
-          padding-top: 18.5px;
-          padding-left: 10px;
-          font-weight: 400;
-        }
-        .services {
-          width: 100%;
-          height: 800px;
-        }
-        .services h2 {
-          margin-left: 25px;
-          font-size: 40px;
-          font-weight: 500;
-          margin: 100px 20px 50px 30px;
-          box-sizing: border-box;
-        }
-        .services .image-gallery {
-          display: flex;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-          box-sizing: border-box;
-        }
-        .services .image-gallery .div {
-          width: 32%;
-          margin: 5px;
-          height: 80%;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-          box-sizing: border-box;
-          position: relative;
-        }
-        .services .image-gallery .div img {
-          width: 100%;
-          height: 85%;
-          object-fit: cover;
-        }
-        .services .image-gallery .div img:hover {
-          transform: scale(1.08);
-          transition: 0.3s ease;
-        }
-        .services .image-gallery .div p {
-          position: absolute;
-          bottom: 0;
-          text-align: center;
-          width: 100%;
-          margin-bottom: 30px;
-        }
-        .banner-2 {
-          width: 100%;
-          height: 700px;
-          background: url("images/wall.avif");
-          background-size: cover;
-          background-repeat: no-repeat;
-          margin-top: 70px;
-          padding-top: 150px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          color: black;
-        }
-        .banner-2 h1 {
-          width: 60%;
-          margin: 200px;
-          text-align: justify;
-          font-family: "Poppins", sans-serif;
-          font-size: 40px;
-          font-weight: 500;
-        }
-        .subscribe-page {
-          width: 100%;
-          height: 700px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        .subscribe-page .left-portion {
-          width: 40%;
-          height: 400px;
-          padding: 30px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-        .subscribe-page .left-portion p {
-          font-size: 25px;
-          font-weight: 500;
-          margin-bottom: 30px;
-        }
-        .subscribe-page .input-box {
-          height: 50px;
-          width: 90%;
-          border: none;
-          padding: 10px;
-          margin-bottom: 20px;
-          border-radius: 5px;
-        }
-        .subscribe-page button {
-          padding: 20px;
-          border: none;
-          background-color: black;
-          color: white;
-          cursor: pointer;
-          font-size: 20px;
-          border-radius: 5px;
-        }
-        .footer {
-          width: 100%;
-          height: 100px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background-color: black;
-          color: white;
-          padding: 0 40px;
-        }
-        .footer .left-part p {
-          margin: 0;
-          font-size: 16px;
-        }
-        .footer .right-part .icon {
-          font-size: 30px;
-          color: white;
-          text-decoration: none;
-        }
-      `}</style>
-    </div>
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="relative h-screen flex items-center justify-center overflow-hidden"
+        >
+          <motion.div
+            animate={{
+              scale: [1, 1.05, 1],
+              rotate: [0, 1, -1, 0],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+            style={{
+              backgroundImage: `url(${heroImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+            className="absolute inset-0 z-0"
+          />
+          <div className="absolute inset-0 bg-black opacity-50 z-10" />
+          <div className="relative z-20 text-center px-4">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="text-5xl md:text-7xl font-bold mb-4 text-white"
+            >
+              Empowering Executive Decisions
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.7 }}
+              className="text-xl md:text-2xl text-gray-300 mb-8"
+            >
+              Unleash the power of AI-driven insights for strategic leadership
+            </motion.p>
+            <Link to={'/user'}>
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)' }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-blue-600 text-white text-xl font-semibold py-4 px-8 rounded-md shadow-lg transition-all duration-300 ease-in-out"
+            >
+              Discover ExecuSense AI™
+            </motion.button></Link>
+          </div>
+        </motion.div>
+
+        {/* Services Section */}
+        <div className="py-24 px-4 bg-gray-800">
+          <h2 className="text-4xl font-bold text-center mb-16 text-blue-400">
+            Our Services
+          </h2>
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[
+              { img: strategyImage, title: 'Strategic Decision Support', desc: 'AI-powered insights for informed decision-making' },
+              { img: insightsImage, title: 'Employee Satisfaction Insights', desc: 'Analyze and improve workplace engagement' },
+              { img: dashboardImage, title: 'Real-Time Leadership Dashboard', desc: 'Comprehensive overview of key performance indicators' },
+            ].map((service, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0 }}
+                whileHover={{ scale: 1.05 }}
+                className="bg-gray-900 rounded-lg overflow-hidden shadow-lg transform transition-all duration-300 hover:shadow-2xl"
+              >
+                <img
+                  src={service.img}
+                  alt={service.title}
+                  className="w-full h-48 object-cover"
+                />
+                <motion.div
+                  className="p-6"
+                  whileHover={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h3 className="text-xl font-semibold mb-2 text-blue-400">{service.title}</h3>
+                  <p className="text-gray-400">{service.desc}</p>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* About Section */}
+        <motion.div
+          ref={ref}
+          initial="hidden"
+          animate={controls}
+          variants={fadeInUp}
+          className="py-24 px-4 bg-gray-900"
+        >
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl font-bold mb-8 text-blue-400">
+              ExecuSense AI™: Redefining Executive Intelligence
+            </h2>
+            <p className="text-xl text-gray-300 mb-12">
+              ExecuSense AI™ empowers executives with data-driven insights for strategic decisions, real-time performance monitoring,
+              risk forecasting, and employee engagement analysis. Our platform optimizes agility and precision to drive
+              organizational growth and resilience in today's dynamic business landscape.
+            </p>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-blue-600 text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Learn More About Our Technology
+            </motion.button>
+          </div>
+        </motion.div>
+
+        {/* CTA Section */}
+        <div className="relative py-24">
+          <motion.div
+            animate={{
+              backgroundPosition: ['0% 0%', '100% 100%'],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+            style={{
+              backgroundImage: `url(${ctaImage})`,
+              backgroundSize: 'cover',
+            }}
+            className="absolute inset-0 z-0"
+          />
+          <div className="absolute inset-0 bg-blue-900 opacity-75 z-10" />
+          <div className="relative z-20 max-w-4xl mx-auto text-center px-4">
+            <motion.h2
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-4xl font-bold mb-8 text-white"
+            >
+              Transform Your Executive Decision-Making
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-xl mb-12 text-gray-200"
+            >
+              Gain the edge in every decision with real-time insights, predictive intelligence, and seamless
+              oversight. ExecuSense AI™ is here to elevate your leadership and drive impactful outcomes.
+            </motion.p>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-blue-600 text-xl font-semibold py-3 px-8 rounded-md shadow-lg transition-all duration-300 ease-in-out"
+            >
+              Schedule a Consultation
+            </motion.button>
+          </div>
+        </div>
+
+        {/* Subscribe Section */}
+        <div className="py-24 px-4 bg-gray-800">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-gray-900 rounded-lg shadow-2xl overflow-hidden"
+            >
+              <div className="md:flex">
+                <div className="md:w-1/2 p-8">
+                  <h3 className="text-2xl font-semibold mb-4 text-blue-400">
+                    Stay Informed
+                  </h3>
+                  <p className="text-gray-300 mb-6">
+                    Subscribe to our newsletter for the latest insights in AI-driven executive decision-making.
+                  </p>
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="w-full p-3 mb-4 bg-gray-800 text-white border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md transition-all duration-300 ease-in-out hover:bg-blue-700"
+                  >
+                    Subscribe
+                  </motion.button>
+                </div>
+                <div className="md:w-1/2 bg-blue-600 p-8 flex items-center justify-center">
+                  <motion.div
+                    className="text-4xl font-bold text-white text-center"
+                  >
+                    Join the AI Revolution in Executive Leadership
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <footer className="bg-gray-900 text-white py-12 px-4">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-blue-400">ExecuSense</h3>
+              <p className="text-gray-400">Empowering executives with AI-driven insights.</p>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4 text-blue-400">Quick Links</h4>
+              <ul className="space-y-2">
+                {['Home', 'Services', 'About', 'Contact'].map((item) => (
+                  <li key={item}>
+                    <a href={`#${item.toLowerCase()}`} className="text-gray-400 hover:text-blue-400 transition-colors">
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4 text-blue-400">Resources</h4>
+              <ul className="space-y-2">
+                {['Blog', 'Case Studies', 'Whitepaper', 'FAQ'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4 text-blue-400">Connect</h4>
+              <ul className="space-y-2">
+                {['LinkedIn', 'Twitter', 'Facebook', 
+                 'Instagram'].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
+            <p>© 2024 ExecuSense. All rights reserved.</p>
+            <p>Powered by LIGMA Technologies</p>
+          </div>
+        </footer>
+      </div>
+    </Lenis>
   );
-};
+}
 
-export default LandingPage;
+export default App;
