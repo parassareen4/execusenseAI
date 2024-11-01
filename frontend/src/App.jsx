@@ -20,7 +20,7 @@ import share from '../src/assets/share.svg'
 import newchat from '../src/assets/newchat.svg'
 import LandingPage from "./Landing";
 
-const socket = io("http://localhost:4000/");
+const socket = io("https://execusenseai.onrender.com");
 
 socket.on("connect", () => {
   console.log("Connected to Socket.IO server:", socket.id);
