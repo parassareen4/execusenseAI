@@ -12,14 +12,14 @@ import { MessageSquare, ArrowUpIcon, User2Icon, ArrowLeft } from "lucide-react";
 import { IoIosArrowDown } from "react-icons/io";
 import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-import responder from "../src/assets/chatgpt.svg"
+import responder from "../src/assets/chatgpt.png"
 import copy from '../src/assets/copy.svg'
 import like from '../src/assets/like.svg'
 import dislike from '../src/assets/dislike.svg'
 import share from '../src/assets/share.svg'
 import newchat from '../src/assets/newchat.svg'
 
-const socket = io("https://chatgpttroll.onrender.com");
+const socket = io("http://localhost:4000/");
 
 socket.on("connect", () => {
   console.log("Connected to Socket.IO server:", socket.id);
@@ -159,7 +159,7 @@ const Chat = () => {
         <img src={newchat} alt="New Chat" className="h-4 w-4 sm:h-6 sm:w-6" />
       </button>
       <div className="flex gap-1 items-center">
-        <span className="font-semibold text-lg sm:text-xl text-zinc-700">ChatGPT </span>
+        <span className="font-semibold text-lg sm:text-xl text-zinc-700">ExecuSenseAI </span>
         <IoIosArrowDown/>
       </div>
     </div>
@@ -255,7 +255,7 @@ const Chat = () => {
             sendMessage(e);
           }
         }}
-        placeholder="Message ChatGpt"
+        placeholder="What can we help you with?"
         className="flex-1 py-2 sm:py-3 px-3 sm:px-5 rounded-[33px] bg-[#f4f4f4] focus-within:outline-none placeholder:text-slate-600 text-sm sm:text-base resize-none overflow-hidden"
         rows="1"
       />
@@ -268,7 +268,7 @@ const Chat = () => {
     </div>
   </form>
   <div className="text-center p-2 text-xs sm:text-sm hidden sm:block text-gray-500">
-    ChatGPT can make mistakes. Check important info.
+    Make your workplace more productive with ExecuSense.
   </div>
 </div>
   );
