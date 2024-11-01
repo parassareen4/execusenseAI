@@ -18,6 +18,7 @@ import like from '../src/assets/like.svg'
 import dislike from '../src/assets/dislike.svg'
 import share from '../src/assets/share.svg'
 import newchat from '../src/assets/newchat.svg'
+import LandingPage from "./Landing";
 
 const socket = io("http://localhost:4000/");
 
@@ -415,8 +416,11 @@ const App = () => {
     <Router>
       <div className="app-container">
         <Routes>
+          <Route 
+          path="/land"
+          element={<LandingPage/>}/>
           <Route
-            path="/"
+            path="/user"
             element={<Navigate to={`/user/${roomId}`} replace />}
           />
           <Route
