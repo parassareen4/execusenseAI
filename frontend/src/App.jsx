@@ -163,7 +163,7 @@ const Chat = () => {
         <IoIosArrowDown/>
       </div>
     </div>
-    <h1 className="text-lg sm:text-xl font-semibold hidden sm:flex gap-2 items-center">New Chat </h1>
+    <h1 className="text-lg sm:text-xl font-semibold hidden sm:flex gap-2 items-center">Demo Chat </h1>
     <div className="flex items-center gap-2 sm:gap-6">
       <motion.button
         whileTap={{ scale: 0.9 }}
