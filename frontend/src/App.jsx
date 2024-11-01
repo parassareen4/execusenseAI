@@ -417,7 +417,7 @@ const App = () => {
       <div className="app-container">
         <Routes>
           <Route 
-          path="/land"
+          path="/"
           element={<LandingPage/>}/>
           <Route
             path="/user"
