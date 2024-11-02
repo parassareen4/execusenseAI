@@ -233,6 +233,7 @@ function App() {
               Gain the edge in every decision with real-time insights, predictive intelligence, and seamless
               oversight. ExecuSense AI™ is here to elevate your leadership and drive impactful outcomes.
             </motion.p>
+             <Link to={'/user'}>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -240,6 +241,7 @@ function App() {
             >
               Schedule a Consultation
             </motion.button>
+               </Link>
           </div>
         </div>
 
