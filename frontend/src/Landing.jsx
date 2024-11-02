@@ -185,6 +185,7 @@ function App() {
               risk forecasting, and employee engagement analysis. Our platform optimizes agility and precision to drive
               organizational growth and resilience in today's dynamic business landscape.
             </p>
+             <Link to={'/user'}>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -192,6 +193,7 @@ function App() {
             >
               Learn More About Our Technology
             </motion.button>
+               </Link>
           </div>
         </motion.div>
 
