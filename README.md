@@ -10,5 +10,5 @@ cd frontend
 npm run dev
 
 
+make sure to change app.jsx socket to backend port
 
-make sure to change app.jsx to backend port
