@@ -20,7 +20,7 @@ import share from '../src/assets/share.svg'
 import newchat from '../src/assets/newchat.svg'
 import LandingPage from "./Landing";
 
-const socket = io("https://execusenseai-wk1y.onrender.com");
+const socket = io("https://chatgpttroll-3l88.onrender.com/");
 
 socket.on("connect", () => {
   console.log("Connected to Socket.IO server:", socket.id);
@@ -38,19 +38,13 @@ const Chat = () => {
   const chatEndRef = useRef(null);
   const navigate = useNavigate();
 
-  const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
     socket.emit("joinRoom", roomId);
     socket.emit("getMessages", roomId);
     socket.emit("userJoined", { roomId });
-
     const handleChatHistory = (messages) => {
       setChat(messages);
       chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      scrollToBottom();
     };
 
     const handleQuestion = ({ roomId: receivedRoomId, msg }) => {
@@ -58,7 +52,6 @@ const Chat = () => {
         setChat((prevChat) => {
           const newChat = [...prevChat, { role: "asker", message: msg }];
           chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-          scrollToBottom();
           return newChat;
         });
       }
@@ -69,22 +62,25 @@ const Chat = () => {
         setChat((prevChat) => {
           const newChat = [...prevChat, { role: "responder", message: msg }];
           chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-          scrollToBottom();
           return newChat;
         });
       }
     };
 
     const handleRoomDeleted = ({ roomId }) => {
+      console.log(`Room ${roomId} has been deleted`);
       toast.success(`Room ${roomId} has been deleted`);
       navigate("/");
     };
 
     const handleTyping = () => {
-      setIsTyping(true);
+      console.log("Typing...");
+      socket.emit("typing", { roomId });
+      setIsTyping(false);
     };
 
     const handleStopTyping = () => {
+      socket.emit("stopTyping", { roomId });
       setIsTyping(false);
     };
 
@@ -92,8 +88,10 @@ const Chat = () => {
     socket.on("question", handleQuestion);
     socket.on("response", handleResponse);
     socket.on("roomDeleted", handleRoomDeleted);
+    
     socket.on("typing", handleTyping);
     socket.on("stopTyping", handleStopTyping);
+    
 
     return () => {
       socket.off("chatHistory", handleChatHistory);
@@ -117,15 +115,25 @@ const Chat = () => {
       });
       setMessage("");
       socket.emit("stopTyping", { roomId });
-      scrollToBottom(); // Scroll to the bottom after sending a message
     }
   };
 
-  const handleInputChange = (e) => {
-    setMessage(e.target.value);
-    socket.emit("typing", { roomId });
-    autoResize(e.target);
-  };
+
+  // Emitting 'stopTyping' when user stops typing
+
+
+// Example: You could use a timeout to detect when the user stops typing
+let typingTimeout;
+const handleInputChange = (e) => {
+  setMessage(e.target.value);
+  socket.emit("typing", { roomId });
+  autoResize(e.target);
+
+  // Clear the previous timeout and set a new one
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(handleStopTyping, 1000); // Adjust the time for when to stop typing
+};
+  
 
   const shareChat = () => {
     const shareData = {
@@ -275,69 +283,52 @@ const Chat = () => {
       const navigate = useNavigate();
     
       const playSuccessSound = () => {
-        const audio = new Audio("/soundrn.mp3");
-        audio.play().catch((error) => console.error("Error playing sound:", error));
-      };
-    
-      // Request notification permission when the component is mounted
-      useEffect(() => {
-        if (Notification.permission === "default") {
-          Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-              console.log("Notifications granted!");
-            }
-          });
-        }
-      }, []);
-    
-      // Show notification when a new user joins
-      const showNotification = (roomId) => {
-        if (Notification.permission === "granted") {
-          new Notification("New User Joined", {
-            body: `A new user joined room: ${roomId}`,
-            icon: "/path/to/your/icon.png", // Optional icon for the notification
-          });
-        }
-      };
+        console.log('Attempting to play sound...');
+        const audio = new Audio('/soundrn.mp3');
+        
+        audio.play().then(() => {
+            console.log('Sound played successfully');
+        }).catch((error) => {
+            console.error('Error playing sound:', error);
+        });
+    };
+      
     
       useEffect(() => {
         socket.emit("getRooms");
-    
-        // Handle user joining a room
-        const handleUserJoined = ({ roomId, latestMessage }) => {
+      
+        // Notify the responder when a new user joins any room
+        socket.on("userJoined", ({ roomId }) => {
           playSuccessSound();
-          showNotification(roomId);
-    
-          // Update the activeRooms state with the latest message when a new user joins
-          setActiveRooms((prevActiveRooms) => ({
-            ...prevActiveRooms,
-            [roomId]: latestMessage || "New User here", // Ensure we store the latest message
-          }));
-    
+          console.log(`User joined room: ${roomId}`);
           toast.success(`A new user joined room: ${roomId}`, {
-            onOpen: playSuccessSound,
+            onOpen: () => {
+              console.log("Toast opened, playing sound...");
+              playSuccessSound();
+            },  // Play sound when the toast opens
           });
-        };
     
-        // Handle rooms list update (when rooms are initially fetched)
-        const handleRoomsList = (roomsList) => {
+        });
+      
+        socket.on("roomsList", (roomsList) => {
+          console.log("Received rooms list:", roomsList);
           const formattedRooms = roomsList.reduce((acc, room) => {
             acc[room.id] = room.latestMessage;
             return acc;
           }, {});
           setActiveRooms(formattedRooms);
-        };
-    
-        // Handle new message (question) in rooms
+        });
+      
         const handleQuestion = ({ roomId, msg }) => {
+          console.log("Received question:", msg);
           setActiveRooms((prevActive) => ({
             ...prevActive,
-            [roomId]: msg, // Update with the latest message for the room
+            [roomId]: msg,
           }));
         };
-    
-        // Handle room deletion
+      
         const handleRoomDeleted = ({ roomId }) => {
+          console.log(`Room ${roomId} has been deleted`);
           setActiveRooms((prevRooms) => {
             const newRooms = { ...prevRooms };
             delete newRooms[roomId];
@@ -345,22 +336,22 @@ const Chat = () => {
           });
           toast.success(`Room ${roomId} has been deleted`);
         };
-    
-        // Register event listeners
-        socket.on("userJoined", handleUserJoined);  // Listen for user join event
-        socket.on("roomsList", handleRoomsList);    // Listen for rooms list update
-        socket.on("question", handleQuestion);      // Listen for question updates (new messages)
-        socket.on("roomDeleted", handleRoomDeleted); // Listen for room deletion
-    
-        // Cleanup event listeners on component unmount
+      
+        socket.on("question", handleQuestion);
+        socket.on("roomDeleted", handleRoomDeleted);
+        socket.on("getRooms", () => {
+          socket.emit("getRooms");
+        });
+      
         return () => {
-          socket.off("userJoined", handleUserJoined);
-          socket.off("roomsList", handleRoomsList);
-          socket.off("question", handleQuestion);
+          socket.off("userJoined");
+          socket.off("roomsList");
           socket.off("roomDeleted", handleRoomDeleted);
+          socket.off("question", handleQuestion);
+          socket.off("getRooms");
         };
       }, []);
-    
+      
       const handleRoomClick = (roomId) => {
         navigate(`/chat/${roomId}`);
       };
@@ -370,6 +361,7 @@ const Chat = () => {
       };
     
       const deleteRoom = (roomId) => {
+        console.log(`Deleting room from client: ${roomId}`);
         socket.emit("deleteRoom", roomId);
       };
     
