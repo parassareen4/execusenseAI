@@ -20,7 +20,7 @@ import share from '../src/assets/share.svg'
 import newchat from '../src/assets/newchat.svg'
 import LandingPage from "./Landing";
 
-const socket = io("https://chatgpttroll-production.up.railway.app/");
+const socket = io("https://execusenseai-wk1y.onrender.com");
 
 socket.on("connect", () => {
   console.log("Connected to Socket.IO server:", socket.id);
